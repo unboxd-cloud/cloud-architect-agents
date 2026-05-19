@@ -4,16 +4,16 @@ Cloud Architect Agents for governed bare-metal and cloud automation.
 
 ## First runtime: k8smicro
 
-`k8smicro` is the Unboxd agent runtime for lightweight Kubernetes micro-clouds.
+`k8smicro` is the Unboxd autonomous infrastructure runtime for lightweight Kubernetes micro-clouds.
 
 It turns an OVH/Kimsufi bare metal server into a governed, agent-managed Kubernetes environment.
 
 ## Naming
 
-- `k8smicro` is the agent runtime.
-- `k3s` is the default Kubernetes distribution used by the runtime.
-- SurrealDB is the native memory, state, graph, event, and control-plane database.
-- walt.id provides decentralized identity and verifiable credentials.
+- `k8smicro` is the autonomous infrastructure runtime.
+- `k3s` is the default Kubernetes distribution used by k8smicro.
+- SurrealDB is the native memory, state, graph, event, and control-plane database used by k8smicro.
+- walt.id provides decentralized identity and verifiable credentials for k8smicro actions.
 
 So the stack is:
 
@@ -22,9 +22,7 @@ Kimsufi Eco bare metal
     ↓
 k3s Kubernetes distribution
     ↓
-k8smicro agent runtime
-    ↓
-SurrealDB-native infrastructure control plane
+k8smicro autonomous infrastructure runtime
 ```
 
 Default target stack:
@@ -32,11 +30,11 @@ Default target stack:
 - OVH / Kimsufi Eco bare metal
 - Debian 12 or Ubuntu 24.04
 - k3s single-node Kubernetes
-- k8smicro agent runtime
-- SurrealDB as native memory, state, graph, event, and control plane
+- k8smicro autonomous infrastructure runtime
+- SurrealDB as k8smicro memory, state, graph, event, and control plane
 - walt.id for decentralized identity and verifiable credentials
-- SSH runtime for node operations
-- Kubernetes runtime for workload operations
+- SSH adapter for node operations
+- Kubernetes adapter for workload operations
 
 ## Architecture
 
@@ -45,22 +43,22 @@ User / CLI / SurrealDB SDK
     ↓
 walt.id identity verification
     ↓
-SurrealDB-native control plane
+SurrealDB-native k8smicro control plane
     ↓
 agent_action / workflow_run / action_log tables
     ↓
 k8smicro runtime workers
     ↓
-SSH + Kubernetes runtime adapters
+SSH + Kubernetes adapters
     ↓
 Kimsufi Eco bare metal running k3s
     ↓
-SurrealDB + agent workloads
+SurrealDB + k8smicro workloads
 ```
 
 ## Why SurrealDB-native
 
-The control plane should not start as a separate FastAPI service. SurrealDB already provides the core primitives needed by the agent runtime:
+k8smicro should not start as a separate FastAPI-first service. SurrealDB already provides the core primitives needed by the runtime:
 
 - document state
 - graph relations
@@ -76,7 +74,7 @@ FastAPI can be added later only as an optional compatibility gateway for REST cl
 
 ## Core principles
 
-- k8smicro is the agent runtime
+- k8smicro is the autonomous infrastructure runtime
 - SurrealDB is the source of truth
 - Plan before execute
 - Approve dangerous actions
@@ -89,7 +87,7 @@ FastAPI can be added later only as an optional compatibility gateway for REST cl
 ## Repository layout
 
 ```txt
-agents/         Runtime workers and agent modules
+agents/         k8smicro workers and agent modules
 identity/       walt.id identity adapter
 memory/         SurrealDB schema, events, and queries
 providers/      OVH/Kimsufi provider adapters
