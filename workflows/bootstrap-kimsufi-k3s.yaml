@@ -1,0 +1,77 @@
+id: bootstrap_kimsufi_k3s
+name: Bootstrap Kimsufi k3s Node
+version: 0.1.0
+
+description: |
+  Bootstrap a Kimsufi Eco bare metal server into a governed k3s micro-cloud.
+
+inputs:
+  server_id:
+    type: string
+  actor_did:
+    type: string
+  hostname:
+    type: string
+
+policies:
+  approval_required:
+    - linux.harden
+    - k3s.install
+    - ingress.install
+    - surrealdb.deploy
+
+steps:
+  - id: verify_identity
+    agent: identity
+    action: vc.verify
+    input:
+      actor_did: "${inputs.actor_did}"
+
+  - id: register_server
+    agent: memory
+    action: state.write
+    input:
+      table: server
+      data:
+        id: "${inputs.server_id}"
+        provider: ovh
+        role: edge-k8s-node
+        hostname: "${inputs.hostname}"
+        status: provisioning
+        tags:
+          - kimsufi
+          - baremetal
+          - k3s
+
+  - id: harden_node
+    agent: k8smicro
+    action: linux.harden
+
+  - id: install_k3s
+    agent: k8smicro
+    action: k3s.install
+
+  - id: install_ingress
+    agent: k8smicro
+    action: ingress.install
+
+  - id: deploy_surrealdb
+    agent: k8smicro
+    action: surrealdb.deploy
+
+  - id: deploy_control_plane
+    agent: k8smicro
+    action: architect.deploy
+
+  - id: healthcheck
+    agent: k8smicro
+    action: k8s.healthcheck
+
+  - id: finalize
+    agent: memory
+    action: state.write
+    input:
+      table: server
+      data:
+        id: "${inputs.server_id}"
+        status: active
