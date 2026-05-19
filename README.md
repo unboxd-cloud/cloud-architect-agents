@@ -6,11 +6,29 @@ Cloud Architect Agents for governed bare-metal and cloud automation.
 
 `k8smicro` turns an OVH/Kimsufi bare metal server into a lightweight Kubernetes micro-cloud.
 
+## Naming
+
+- `k3s` is the Kubernetes distribution installed on the bare metal server.
+- `k8smicro` is the Unboxd agent/runtime layer that installs, manages, and governs that Kubernetes environment.
+
+So the stack is:
+
+```txt
+Kimsufi Eco bare metal
+    ↓
+k3s Kubernetes distribution
+    ↓
+k8smicro agent/runtime layer
+    ↓
+SurrealDB-native infrastructure control plane
+```
+
 Default target stack:
 
 - OVH / Kimsufi Eco bare metal
 - Debian 12 or Ubuntu 24.04
 - k3s single-node Kubernetes
+- k8smicro as the Kubernetes micro-cloud agent/runtime
 - SurrealDB as native memory, state, graph, event, and control plane
 - walt.id for decentralized identity and verifiable credentials
 - SSH runtime for node operations
