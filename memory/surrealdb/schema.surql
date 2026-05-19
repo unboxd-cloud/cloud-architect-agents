@@ -1,5 +1,5 @@
 -- SurrealDB schema for cloud-architect-agents
--- Memory, inventory, identity bindings, workflows, and audit logs.
+-- Memory, inventory, identity bindings, workflows, actions, and audit logs.
 
 DEFINE NAMESPACE IF NOT EXISTS unboxd;
 DEFINE DATABASE IF NOT EXISTS cloud_architect;
@@ -45,6 +45,25 @@ DEFINE FIELD credential_id ON identity_binding TYPE option<string>;
 DEFINE FIELD valid_from ON identity_binding TYPE option<datetime>;
 DEFINE FIELD valid_until ON identity_binding TYPE option<datetime>;
 DEFINE FIELD created_at ON identity_binding TYPE datetime DEFAULT time::now();
+
+DEFINE TABLE agent_action SCHEMAFULL;
+DEFINE FIELD actor_did ON agent_action TYPE string;
+DEFINE FIELD agent_id ON agent_action TYPE string;
+DEFINE FIELD action ON agent_action TYPE string;
+DEFINE FIELD target ON agent_action TYPE string;
+DEFINE FIELD status ON agent_action TYPE string DEFAULT "pending";
+DEFINE FIELD priority ON agent_action TYPE int DEFAULT 100;
+DEFINE FIELD approval_required ON agent_action TYPE bool DEFAULT false;
+DEFINE FIELD approved ON agent_action TYPE bool DEFAULT false;
+DEFINE FIELD claimed_by ON agent_action TYPE option<string>;
+DEFINE FIELD claimed_at ON agent_action TYPE option<datetime>;
+DEFINE FIELD input ON agent_action TYPE object DEFAULT {};
+DEFINE FIELD output ON agent_action TYPE object DEFAULT {};
+DEFINE FIELD error ON agent_action TYPE option<string>;
+DEFINE FIELD created_at ON agent_action TYPE datetime DEFAULT time::now();
+DEFINE FIELD updated_at ON agent_action TYPE datetime DEFAULT time::now();
+DEFINE INDEX agent_action_status_idx ON agent_action FIELDS status;
+DEFINE INDEX agent_action_agent_idx ON agent_action FIELDS agent_id;
 
 DEFINE TABLE agent_memory SCHEMAFULL;
 DEFINE FIELD agent_id ON agent_memory TYPE string;
