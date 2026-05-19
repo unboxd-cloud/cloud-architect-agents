@@ -8,6 +8,40 @@ Cloud Architect Agents for governed bare-metal and cloud automation.
 
 It turns an OVH/Kimsufi bare metal server into a governed, agent-managed Kubernetes environment.
 
+## Layer model
+
+```txt
+Layer 0: Physical / Provider
+  OVH / Kimsufi Eco bare metal server
+
+Layer 1: Operating System
+  Debian 12 or Ubuntu 24.04
+
+Layer 2: Kubernetes Substrate
+  k3s single-node Kubernetes
+
+Layer 3: k8smicro Runtime
+  Autonomous infrastructure runtime
+  Workers, adapters, workflows, policies, orchestration
+
+Layer 4: k8smicro Control Plane Data
+  SurrealDB
+  Memory, state, graph, action queue, workflow runs, audit logs
+
+Layer 5: Identity / Trust
+  walt.id
+  DIDs, verifiable credentials, approvals, signed actions
+
+Layer 6: Managed Workloads
+  Agent workloads, platform services, user apps, infrastructure tools
+```
+
+In short:
+
+```txt
+OVH/Kimsufi → Linux → k3s → k8smicro → SurrealDB + walt.id → managed workloads
+```
+
 ## Naming
 
 - `k8smicro` is the autonomous infrastructure runtime.
@@ -15,7 +49,7 @@ It turns an OVH/Kimsufi bare metal server into a governed, agent-managed Kuberne
 - SurrealDB is the native memory, state, graph, event, and control-plane database used by k8smicro.
 - walt.id provides decentralized identity and verifiable credentials for k8smicro actions.
 
-So the stack is:
+So the minimal runtime stack is:
 
 ```txt
 Kimsufi Eco bare metal
