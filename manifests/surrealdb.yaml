@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: surrealdb
+  namespace: cloud-architect-agents
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: surrealdb
+  template:
+    metadata:
+      labels:
+        app: surrealdb
+    spec:
+      containers:
+        - name: surrealdb
+          image: surrealdb/surrealdb:latest
+          args:
+            - start
+            - --log
+            - info
+            - --user
+            - root
+            - --pass
+            - root
+            - memory
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: surrealdb
+  namespace: cloud-architect-agents
+spec:
+  selector:
+    app: surrealdb
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
