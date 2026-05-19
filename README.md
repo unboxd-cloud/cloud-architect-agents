@@ -2,14 +2,18 @@
 
 Cloud Architect Agents for governed bare-metal and cloud automation.
 
-## First agent: k8smicro
+## First runtime: k8smicro
 
-`k8smicro` turns an OVH/Kimsufi bare metal server into a lightweight Kubernetes micro-cloud.
+`k8smicro` is the Unboxd agent runtime for lightweight Kubernetes micro-clouds.
+
+It turns an OVH/Kimsufi bare metal server into a governed, agent-managed Kubernetes environment.
 
 ## Naming
 
-- `k3s` is the Kubernetes distribution installed on the bare metal server.
-- `k8smicro` is the Unboxd agent/runtime layer that installs, manages, and governs that Kubernetes environment.
+- `k8smicro` is the agent runtime.
+- `k3s` is the default Kubernetes distribution used by the runtime.
+- SurrealDB is the native memory, state, graph, event, and control-plane database.
+- walt.id provides decentralized identity and verifiable credentials.
 
 So the stack is:
 
@@ -18,7 +22,7 @@ Kimsufi Eco bare metal
     ↓
 k3s Kubernetes distribution
     ↓
-k8smicro agent/runtime layer
+k8smicro agent runtime
     ↓
 SurrealDB-native infrastructure control plane
 ```
@@ -28,7 +32,7 @@ Default target stack:
 - OVH / Kimsufi Eco bare metal
 - Debian 12 or Ubuntu 24.04
 - k3s single-node Kubernetes
-- k8smicro as the Kubernetes micro-cloud agent/runtime
+- k8smicro agent runtime
 - SurrealDB as native memory, state, graph, event, and control plane
 - walt.id for decentralized identity and verifiable credentials
 - SSH runtime for node operations
@@ -45,9 +49,9 @@ SurrealDB-native control plane
     ↓
 agent_action / workflow_run / action_log tables
     ↓
-k8smicro worker agents
+k8smicro runtime workers
     ↓
-SSH + Kubernetes runtime
+SSH + Kubernetes runtime adapters
     ↓
 Kimsufi Eco bare metal running k3s
     ↓
@@ -72,6 +76,7 @@ FastAPI can be added later only as an optional compatibility gateway for REST cl
 
 ## Core principles
 
+- k8smicro is the agent runtime
 - SurrealDB is the source of truth
 - Plan before execute
 - Approve dangerous actions
@@ -84,11 +89,11 @@ FastAPI can be added later only as an optional compatibility gateway for REST cl
 ## Repository layout
 
 ```txt
-agents/         Worker agent modules
+agents/         Runtime workers and agent modules
 identity/       walt.id identity adapter
 memory/         SurrealDB schema, events, and queries
 providers/      OVH/Kimsufi provider adapters
-runtimes/       SSH and Kubernetes execution runtimes
+runtimes/       SSH and Kubernetes execution adapters
 workflows/      Declarative infrastructure workflows
 manifests/      Kubernetes manifests
 scripts/        Bootstrap and healthcheck scripts
@@ -99,7 +104,7 @@ scripts/        Bootstrap and healthcheck scripts
 1. Verify actor identity with walt.id
 2. Write requested action to SurrealDB
 3. Register Kimsufi target server in SurrealDB
-4. Worker claims pending action
+4. k8smicro worker claims pending action
 5. Harden Linux node
 6. Install k3s
 7. Install ingress and cert-manager
